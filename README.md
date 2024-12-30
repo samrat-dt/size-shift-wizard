@@ -2,7 +2,8 @@
 
 A powerful, browser-based image processing tool that allows users to compress, convert, and label images without server uploads.
 
-https://mesh-bill-quotator.lovable.app/
+https://size-shift-wizard.lovable.app/
+
 
 ## Features
 
