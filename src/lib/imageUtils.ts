@@ -2,6 +2,8 @@ import imageCompression from "browser-image-compression";
 
 interface LabelConfig {
   text: string;
+  textColor: string;
+  borderColor: string;
 }
 
 export async function processImage(
@@ -26,6 +28,7 @@ export async function processImage(
       url = await addLabelToImage(url, labelConfig);
     }
 
+    // Convert data URL to Blob to get accurate size
     const response = await fetch(url);
     const blob = await response.blob();
 
@@ -47,35 +50,35 @@ async function addLabelToImage(
       const ctx = canvas.getContext("2d");
       if (!ctx) return resolve(dataUrl);
 
-      const labelHeight = Math.max(40, img.height * 0.1);
       canvas.width = img.width;
-      canvas.height = img.height + labelHeight;
+      canvas.height = img.height;
 
       // Draw original image
       ctx.drawImage(img, 0, 0);
 
-      // Add label background
+      // Add label
+      const labelHeight = Math.max(40, img.height * 0.1);
       ctx.fillStyle = "#000000e6";
-      ctx.fillRect(0, img.height, img.width, labelHeight);
+      ctx.fillRect(0, img.height - labelHeight, img.width, labelHeight);
 
-      // Add borders
-      ctx.strokeStyle = "#000000";
+      // Add border
+      ctx.strokeStyle = labelConfig.borderColor;
       ctx.lineWidth = 1;
-      ctx.strokeRect(0, img.height, img.width, 0); // top
-      ctx.strokeRect(0, img.height, 0, labelHeight); // left
-      ctx.strokeRect(img.width - 1, img.height, 0, labelHeight); // right
+      ctx.strokeRect(0, img.height - labelHeight, img.width, 0); // top
+      ctx.strokeRect(0, img.height - labelHeight, 0, labelHeight); // left
+      ctx.strokeRect(img.width, img.height - labelHeight, 0, labelHeight); // right
       ctx.lineWidth = 3;
-      ctx.strokeRect(0, canvas.height - 1, img.width, 0); // bottom
+      ctx.strokeRect(0, img.height, img.width, 0); // bottom
 
       // Add text
-      ctx.fillStyle = "#FFFFFF";
+      ctx.fillStyle = labelConfig.textColor;
       ctx.font = `${labelHeight * 0.4}px Arial`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(
         labelConfig.text,
         img.width / 2,
-        img.height + labelHeight / 2
+        img.height - labelHeight / 2
       );
 
       resolve(canvas.toDataURL());

@@ -19,7 +19,9 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
   const [processedSize, setProcessedSize] = useState<number>(0);
   const [labelConfig, setLabelConfig] = useState<{
     text: string;
-  }>({ text: "" });
+    textColor: string;
+    borderColor: string;
+  }>({ text: "", textColor: "#FFFFFF", borderColor: "#000000" });
   const { toast } = useToast();
 
   const handleProcess = async (format: string, quality: number) => {
@@ -31,14 +33,14 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
       toast({
         title: "Success!",
         description: "Image processed successfully",
-        duration: 2000,
+        duration: 2000, // Auto-dismiss after 2 seconds
       });
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to process image",
         variant: "destructive",
-        duration: 2000,
+        duration: 2000, // Auto-dismiss after 2 seconds
       });
     } finally {
       setProcessing(false);
@@ -57,69 +59,63 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
   };
 
   return (
-    <div className="h-screen flex">
-      {/* Left side - Image previews */}
-      <div className="w-1/2 h-full p-4 border-r">
-        <div className="h-full flex flex-col gap-4">
-          <div className="flex-1">
+    <div className="space-y-6">
+      <Card className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
             <h3 className="text-lg font-medium mb-2">Original</h3>
-            <div className="relative h-[calc(50%-2rem)] overflow-hidden rounded-lg">
-              <img
-                src={preview}
-                alt="Original"
-                className="object-contain w-full h-full"
-              />
-              <p className="absolute bottom-2 right-2 text-sm bg-black/70 text-white px-2 py-1 rounded">
-                {(file.size / 1024).toFixed(2)} KB
-              </p>
-            </div>
+            <img
+              src={preview}
+              alt="Original"
+              className="max-w-full h-auto rounded-lg"
+            />
+            <p className="mt-2 text-sm text-gray-500">
+              Size: {(file.size / 1024).toFixed(2)} KB
+            </p>
           </div>
-          <div className="flex-1">
+          <div>
             <h3 className="text-lg font-medium mb-2">Processed</h3>
-            <div className="relative h-[calc(50%-2rem)] overflow-hidden rounded-lg">
-              {processedImage ? (
-                <>
-                  <img
-                    src={processedImage}
-                    alt="Processed"
-                    className="object-contain w-full h-full"
-                  />
-                  <p className="absolute bottom-2 right-2 text-sm bg-black/70 text-white px-2 py-1 rounded">
-                    {(processedSize / 1024).toFixed(2)} KB
-                  </p>
-                </>
-              ) : (
-                <div className="flex items-center justify-center h-full border-2 border-dashed border-gray-300 rounded-lg">
-                  <p className="text-gray-500">Processed image will appear here</p>
-                </div>
-              )}
-            </div>
+            {processedImage ? (
+              <>
+                <img
+                  src={processedImage}
+                  alt="Processed"
+                  className="max-w-full h-auto rounded-lg"
+                />
+                <p className="mt-2 text-sm text-gray-500">
+                  Size: {(processedSize / 1024).toFixed(2)} KB
+                </p>
+              </>
+            ) : (
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center text-gray-500">
+                Processed image will appear here
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      </Card>
 
-      {/* Right side - Controls */}
-      <div className="w-1/2 h-full p-4 overflow-auto">
-        <div className="space-y-4">
-          <ImageLabel onLabelChange={setLabelConfig} />
-          <ProcessingOptions onProcess={handleProcess} disabled={processing} />
-          
-          <div className="flex justify-between mt-4">
-            <Button variant="outline" onClick={onReset}>
-              Upload New Image
-            </Button>
-            <Button onClick={handleDownload} disabled={!processedImage || processing}>
-              {processing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                "Download Processed Image"
-              )}
-            </Button>
-          </div>
-        </div>
+      <ImageLabel onLabelChange={setLabelConfig} />
+
+      <ProcessingOptions onProcess={handleProcess} disabled={processing} />
+
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={onReset}>
+          Upload New Image
+        </Button>
+        <Button
+          onClick={handleDownload}
+          disabled={!processedImage || processing}
+        >
+          {processing ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            "Download Processed Image"
+          )}
+        </Button>
       </div>
     </div>
   );
