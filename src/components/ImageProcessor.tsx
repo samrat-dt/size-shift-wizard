@@ -19,9 +19,7 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
   const [processedSize, setProcessedSize] = useState<number>(0);
   const [labelConfig, setLabelConfig] = useState<{
     text: string;
-    textColor: string;
-    borderColor: string;
-  }>({ text: "", textColor: "#FFFFFF", borderColor: "#000000" });
+  }>({ text: "" });
   const { toast } = useToast();
 
   const handleProcess = async (format: string, quality: number) => {
@@ -33,14 +31,14 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
       toast({
         title: "Success!",
         description: "Image processed successfully",
-        duration: 2000, // Auto-dismiss after 2 seconds
+        duration: 2000,
       });
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to process image",
         variant: "destructive",
-        duration: 2000, // Auto-dismiss after 2 seconds
+        duration: 2000,
       });
     } finally {
       setProcessing(false);
@@ -59,7 +57,7 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 h-[calc(100vh-12rem)] overflow-auto">
       <Card className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
