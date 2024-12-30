@@ -1,11 +1,16 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { ImageUploader } from "@/components/ImageUploader";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">Image Processor</h1>
+          <p className="mt-3 text-lg text-gray-500">
+            Convert and compress your images easily
+          </p>
+        </div>
+        <ImageUploader />
       </div>
     </div>
   );
