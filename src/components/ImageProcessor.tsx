@@ -57,12 +57,13 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
   };
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex flex-col gap-4 p-4">
-      <Card className="flex-grow overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full p-4">
-          <div className="space-y-2">
-            <h3 className="text-lg font-medium">Original</h3>
-            <div className="relative h-[calc(100%-2rem)] overflow-hidden rounded-lg">
+    <div className="h-screen flex">
+      {/* Left side - Image previews */}
+      <div className="w-1/2 h-full p-4 border-r">
+        <div className="h-full flex flex-col gap-4">
+          <div className="flex-1">
+            <h3 className="text-lg font-medium mb-2">Original</h3>
+            <div className="relative h-[calc(50%-2rem)] overflow-hidden rounded-lg">
               <img
                 src={preview}
                 alt="Original"
@@ -73,9 +74,9 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
               </p>
             </div>
           </div>
-          <div className="space-y-2">
-            <h3 className="text-lg font-medium">Processed</h3>
-            <div className="relative h-[calc(100%-2rem)] overflow-hidden rounded-lg">
+          <div className="flex-1">
+            <h3 className="text-lg font-medium mb-2">Processed</h3>
+            <div className="relative h-[calc(50%-2rem)] overflow-hidden rounded-lg">
               {processedImage ? (
                 <>
                   <img
@@ -95,29 +96,30 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
             </div>
           </div>
         </div>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <ImageLabel onLabelChange={setLabelConfig} />
-        <div className="md:col-span-2">
-          <ProcessingOptions onProcess={handleProcess} disabled={processing} />
-        </div>
       </div>
 
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={onReset}>
-          Upload New Image
-        </Button>
-        <Button onClick={handleDownload} disabled={!processedImage || processing}>
-          {processing ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Processing...
-            </>
-          ) : (
-            "Download Processed Image"
-          )}
-        </Button>
+      {/* Right side - Controls */}
+      <div className="w-1/2 h-full p-4 overflow-auto">
+        <div className="space-y-4">
+          <ImageLabel onLabelChange={setLabelConfig} />
+          <ProcessingOptions onProcess={handleProcess} disabled={processing} />
+          
+          <div className="flex justify-between mt-4">
+            <Button variant="outline" onClick={onReset}>
+              Upload New Image
+            </Button>
+            <Button onClick={handleDownload} disabled={!processedImage || processing}>
+              {processing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Download Processed Image"
+              )}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
