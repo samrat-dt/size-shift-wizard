@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { processImage } from "@/lib/imageUtils";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import { ImageLabel } from "./ImageLabel";
 
 interface ImageProcessorProps {
   file: File;
@@ -16,23 +17,30 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
   const [processing, setProcessing] = useState(false);
   const [processedImage, setProcessedImage] = useState<string>("");
   const [processedSize, setProcessedSize] = useState<number>(0);
+  const [labelConfig, setLabelConfig] = useState<{
+    text: string;
+    textColor: string;
+    borderColor: string;
+  }>({ text: "", textColor: "#FFFFFF", borderColor: "#000000" });
   const { toast } = useToast();
 
   const handleProcess = async (format: string, quality: number) => {
     try {
       setProcessing(true);
-      const result = await processImage(file, format, quality);
+      const result = await processImage(file, format, quality, labelConfig);
       setProcessedImage(result.url);
       setProcessedSize(result.size);
       toast({
         title: "Success!",
         description: "Image processed successfully",
+        duration: 2000, // Auto-dismiss after 2 seconds
       });
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to process image",
         variant: "destructive",
+        duration: 2000, // Auto-dismiss after 2 seconds
       });
     } finally {
       setProcessing(false);
@@ -86,6 +94,8 @@ export const ImageProcessor = ({ file, preview, onReset }: ImageProcessorProps) 
           </div>
         </div>
       </Card>
+
+      <ImageLabel onLabelChange={setLabelConfig} />
 
       <ProcessingOptions onProcess={handleProcess} disabled={processing} />
 
